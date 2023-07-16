@@ -33,8 +33,14 @@ def title():
 # Parameters: None
 def printserial(serial_info):
     # Creating a table of serial information
-    table_headers = ["Port", "Description", "Hardware ID"]
-    table_data = [(port, desc, hwid) for port, desc, hwid in serial_info]
+    table_headers = ["Port", "Permissions", "Date", "Target"]
+    table_data = []
+    
+    for port, perm, date, tgt in serial_info:
+        if port == "/dev/ttyS0":
+            print("PORT MODIFIED")
+            port = "/dev/ttyS0"  # Map /dev/serial0 to /dev/ttyS0
+        table_data.append((port, perm, date, tgt))
     table = tabulate(table_data, headers=table_headers, tablefmt="grid")
     
     # Printing the serial information table

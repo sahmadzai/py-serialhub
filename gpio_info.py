@@ -7,25 +7,33 @@
 #
 #!/bin/bash
 
-from gpiozero import GPIODevice, Pin
 from tabulate import tabulate
+import subprocess
 
-# Define the I2C and UART pin numbers
-i2c_pins = [2, 3]  # Modify according to your specific GPIO pin numbers for I2C
-uart_pins = [14, 15]  # Modify according to your specific GPIO pin numbers for UART
+# Define the I2C and UART ports
+i2c_port = "/dev/i2c-1"  # Modify according to your specific I2C port
+uart_port = "/dev/serial0"  # Modify according to your specific UART port
 
-# Get detailed information for I2C pins
-i2c_pin_info = [Pin(pin) for pin in i2c_pins]
-i2c_pin_descriptions = [pin.function for pin in i2c_pin_info]
-i2c_pin_hardware_ids = [pin.humanize() for pin in i2c_pin_info]
+# Execute the gpio command to retrieve pin mappings
+i2c_pin_info = subprocess.check_output(["gpio", "-g", "readall", i2c_port]).decode("utf-8")
+uart_pin_info = subprocess.check_output(["gpio", "-g", "readall", uart_port]).decode("utf-8")
 
-# Get detailed information for UART pins
-uart_pin_info = [Pin(pin) for pin in uart_pins]
-uart_pin_descriptions = [pin.function for pin in uart_pin_info]
-uart_pin_hardware_ids = [pin.humanize() for pin in uart_pin_info]
+# Parse the gpio command output to extract pin information
+def parse_pin_info(pin_info):
+    lines = pin_info.strip().split("\n")
+    table_data = []
+    for line in lines[3:-1]:
+        parts = line.split("|")
+        pin_num = parts[1].strip()
+        pin_func = parts[3].strip()
+        pin_hardware_id = parts[4].strip()
+        table_data.append((pin_num, pin_func, pin_hardware_id))
+    return table_data
 
-# Display the GPIO pin information in a table format
+# Format and print the GPIO pin information in a table
 table_headers = ["Pin", "Function", "Hardware ID"]
-table_data = list(zip(i2c_pins + uart_pins, i2c_pin_descriptions + uart_pin_descriptions, i2c_pin_hardware_ids + uart_pin_hardware_ids))
+i2c_table_data = parse_pin_info(i2c_pin_info)
+uart_table_data = parse_pin_info(uart_pin_info)
+table_data = i2c_table_data + uart_table_data
 
 print(tabulate(table_data, headers=table_headers, tablefmt="grid"))

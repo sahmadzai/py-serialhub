@@ -23,9 +23,6 @@ def main():
     # Print the serial connections information (identifiers, port, protocol, etc.) from the Raspberry Pi to the console
     gui.printserial(serialinfo)
 
-    # Print the GPIO info to the console
-    subprocess.run(["python", "gpio_info.py"])
-
 # Entry point of the program
 if __name__ == "__main__":
     main()
