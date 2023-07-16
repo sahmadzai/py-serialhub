@@ -10,6 +10,7 @@
 # Importing the necessary libraries and files
 import gui
 import getserial
+import geti2c
 import subprocess
 
 # Main function
@@ -22,6 +23,12 @@ def main():
 
     # Print the serial connections information (identifiers, port, protocol, etc.) from the Raspberry Pi to the console
     gui.printserial(serialinfo)
+
+    # Getting the I2C devices connected to the Raspberry Pi and returning it to main.py
+    i2cdevices = geti2c.geti2c()
+
+    # Print the I2C devices connected to the Raspberry Pi to the console
+    gui.printi2c(i2cdevices)
 
 # Entry point of the program
 if __name__ == "__main__":

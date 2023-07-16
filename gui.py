@@ -47,6 +47,22 @@ def printserial(serial_info):
     print(table)
 
 
+# printi2c()
+# Prints the I2C devices connected to the Raspberry Pi
+# Parameters: None
+def printi2c(i2c_devices):
+    # Creating a table of I2C devices
+    table_headers = ["Device Address"]
+    table_data = []
+    
+    for device in i2c_devices:
+        table_data.append((device))
+    table = tabulate(table_data, headers=table_headers, tablefmt="grid")
+    
+    # Printing the I2C devices table
+    print(table)
+
+
 
 
     
